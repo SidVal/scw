@@ -8,6 +8,7 @@ scw/
 │  ├─ app/
 │  │  ├─ main.js
 │  │  ├─ santaEngine.js
+│  │  ├─ safety.js
 │  │  └─ content/
 │  │     └─ santa_brain.json   # copiado manualmente
 │  └─ assets/
