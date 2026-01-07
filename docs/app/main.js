@@ -19,6 +19,16 @@ function santaTyping() {
   return addMessage("🎅 Papá Noel está escribiendo…", "santa", "typing");
 }
 
+function isValidUserInput(text) {
+  const t = text.trim();
+
+  if (/^[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]+$/.test(t)) return false;
+  if (/^[a-zA-ZáéíóúÁÉÍÓÚñÑ]$/.test(t)) return false;
+  if (t.length < 2 && !/^\d+$/.test(t)) return false;
+
+  return true;
+}
+
 async function loadBrain() {
   const res = await fetch("./app/content/santa_brain.json");
   if (!res.ok) throw new Error("No se pudo cargar santa_brain.json");
@@ -37,22 +47,32 @@ async function init() {
     const text = inputEl.value.trim();
     if (!text) return;
 
+    if (!isValidUserInput(text)) {
+      addMessage(
+        "😊 ¿Me lo podés decir con palabras o un número? Así te entiendo mejor.",
+        "santa"
+      );
+      inputEl.value = "";
+      return;
+    }
+
     addMessage(text, "child");
     inputEl.value = "";
 
     const typingEl = santaTyping();
     const reply = santa.next(text);
     const typingTime = Math.min(
-        2500,
-        Math.max(1200, 800 + reply.length * 20)
-      );
-    
+      2500,
+      Math.max(1200, 800 + reply.length * 20)
+    );
+
     setTimeout(() => {
       typingEl.remove();
       addMessage(reply, "santa");
     }, typingTime);
   }
 
+  // ✅ EVENT LISTENERS SE REGISTRAN UNA SOLA VEZ
   sendBtn.addEventListener("click", sendMessage);
   inputEl.addEventListener("keydown", e => {
     if (e.key === "Enter") sendMessage();
