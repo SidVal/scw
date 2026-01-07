@@ -1,3 +1,7 @@
+import { createStorage } from "./storage.js";
+import { createSafety } from "./safety.js";
+import { createSantaEngine } from "./santaEngine.js";
+
 const messagesEl = document.getElementById("messages");
 const inputEl = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
@@ -15,39 +19,47 @@ function santaTyping() {
   return addMessage("🎅 Papá Noel está escribiendo…", "santa", "typing");
 }
 
-function fakeSantaReply(userText) {
-  const replies = [
-    "Ho ho ho. Qué lindo leerte 🎄",
-    "Me encanta lo que me contás. ¿Querés seguir charlando?",
-    "Eso suena muy especial. Contame un poquito más ✨",
-    "¡Qué buena idea! Seguro a los duendes les gustaría escuchar eso 🦌"
-  ];
-  return replies[Math.floor(Math.random() * replies.length)];
+async function loadBrain() {
+  const res = await fetch("./app/content/santa_brain.json");
+  if (!res.ok) throw new Error("No se pudo cargar santa_brain.json");
+  return res.json();
 }
 
-function sendMessage() {
-  const text = inputEl.value.trim();
-  if (!text) return;
+async function init() {
+  const brain = await loadBrain();
+  const storage = createStorage();
+  const safety = createSafety();
+  const santa = createSantaEngine(brain, storage, safety);
 
-  addMessage(text, "child");
-  inputEl.value = "";
+  addMessage(santa.boot(), "santa");
 
-  const typingEl = santaTyping();
+  function sendMessage() {
+    const text = inputEl.value.trim();
+    if (!text) return;
 
-  setTimeout(() => {
-    typingEl.remove();
-    const reply = fakeSantaReply(text);
-    addMessage(reply, "santa");
-  }, 800);
+    addMessage(text, "child");
+    inputEl.value = "";
+
+    const typingEl = santaTyping();
+    const reply = santa.next(text);
+    const typingTime = Math.min(
+        2500,
+        Math.max(1200, 800 + reply.length * 20)
+      );
+    
+    setTimeout(() => {
+      typingEl.remove();
+      addMessage(reply, "santa");
+    }, typingTime);
+  }
+
+  sendBtn.addEventListener("click", sendMessage);
+  inputEl.addEventListener("keydown", e => {
+    if (e.key === "Enter") sendMessage();
+  });
 }
 
-sendBtn.addEventListener("click", sendMessage);
-
-inputEl.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") sendMessage();
+init().catch(err => {
+  console.error(err);
+  addMessage("Ups. Papá Noel se perdió entre los regalos 🎁", "santa");
 });
-
-// Mensaje inicial
-setTimeout(() => {
-  addMessage("¡Ho ho ho! 🎅 Hola. ¿Cómo te llamás?", "santa");
-}, 400);
