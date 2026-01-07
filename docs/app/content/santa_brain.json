@@ -1,0 +1,117 @@
+{
+  "version": 1,
+  "lang": "es-AR",
+  "generatedAt": "2026-01-07T17:48:04.172Z",
+  "intents": {
+    "intents": [
+      {
+        "id": "greet",
+        "keywords": [
+          "hola",
+          "buenas",
+          "hello",
+          "holaaa"
+        ]
+      },
+      {
+        "id": "wishlist",
+        "keywords": [
+          "quiero",
+          "regalo",
+          "regalos",
+          "navidad",
+          "lista",
+          "deseo"
+        ]
+      },
+      {
+        "id": "age",
+        "keywords": [
+          "tengo",
+          "años",
+          "edad"
+        ]
+      },
+      {
+        "id": "where",
+        "keywords": [
+          "donde",
+          "estás",
+          "vives",
+          "polo",
+          "norte"
+        ]
+      },
+      {
+        "id": "unsafe_personal",
+        "keywords": [
+          "dirección",
+          "telefono",
+          "whatsapp",
+          "instagram",
+          "dni",
+          "colegio"
+        ]
+      },
+      {
+        "id": "goodbye",
+        "keywords": [
+          "chau",
+          "adiós",
+          "hasta luego",
+          "me voy"
+        ]
+      }
+    ]
+  },
+  "replies": {
+    "replies": {
+      "greet": [
+        "¡Ho ho ho! ¡Hola! Soy Papá Noel. ¿Cómo te llamás?",
+        "¡Hola, campeón o campeona! ¿Querés contarme qué te hace feliz en estas fiestas?"
+      ],
+      "wishlist": [
+        "¡Me encanta tu idea! Antes de anotar, contame. ¿Es para jugar, para aprender o para crear cosas?",
+        "¡Perfecto! ¿Podés elegir 1 o 2 regalos que te ilusionen mucho?"
+      ],
+      "where": [
+        "Estoy preparando todo en mi taller del Polo Norte. ¡Los duendes están a full!",
+        "Entre nieve y luces. Mi taller está muy cerquita del Polo Norte."
+      ],
+      "goodbye": [
+        "¡Gracias por charlar conmigo! Que tengas una noche mágica. Ho ho ho."
+      ]
+    }
+  },
+  "flows": {
+    "flows": {
+      "onboarding": {
+        "steps": [
+          {
+            "id": "ask_name",
+            "santa": "¡Ho ho ho! ¿Cómo te llamás?",
+            "expect": "free_text",
+            "save_as": "childName"
+          },
+          {
+            "id": "ask_age",
+            "santa": "¡Encantado, {childName}! ¿Cuántos años tenés?",
+            "expect": "number_3_12",
+            "save_as": "childAge"
+          },
+          {
+            "id": "ask_mood",
+            "santa": "Genial. ¿Querés contarme algo lindo que hiciste esta semana?",
+            "expect": "free_text",
+            "save_as": "goodThing"
+          },
+          {
+            "id": "handoff",
+            "santa": "¡Qué lindo, {childName}! Ahora sí. ¿Charlamos sobre tu lista de deseos o sobre la Navidad?",
+            "expect": "intent_choice"
+          }
+        ]
+      }
+    }
+  }
+}
