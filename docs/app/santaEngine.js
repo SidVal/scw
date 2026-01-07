@@ -20,7 +20,7 @@ export function createSantaEngine(brain, storage, safety) {
 
   function detectIntent(text) {
     const t = text.toLowerCase();
-    for (const it of brain.intents.intents) {
+    for (const it of brain.intents) {
       if (it.keywords.some(k => t.includes(k))) return it.id;
     }
     return "unknown";
