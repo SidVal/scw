@@ -19,6 +19,6 @@ scw/
 └─ README.md
 ```
 
-## Lectura
+## Log
 
 - Análisis completo: https://github.com/SidVal/SidV/issues/102#issue-3788670278
