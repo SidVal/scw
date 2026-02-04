@@ -18,3 +18,7 @@ scw/
 │     └─ pages.yml
 └─ README.md
 ```
+
+## Lectura
+
+- Análisis completo: https://github.com/SidVal/SidV/issues/102#issue-3788670278
