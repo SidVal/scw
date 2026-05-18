@@ -1,6 +1,13 @@
 # scw
 Santa Chat Web | Public Beta Test
 
+## Releases
+
+- [Beta Test](https://github.com/SidVal/scw/releases/tag/v.beta)
+
+
+## Estructura
+
 ```txt
 scw/
 ├─ docs/
@@ -22,3 +29,4 @@ scw/
 ## Log
 
 - Análisis completo: https://github.com/SidVal/SidV/issues/102#issue-3788670278
+- 18/05/2026: [Release 1](https://github.com/SidVal/scw/releases/tag/v.beta)
