@@ -51,13 +51,38 @@ export function createSantaEngine(brain, storage, safety) {
 
       // Validar inputs específicos por paso antes de avanzar
       if (currentStep.expect === "number_3_12") {
-        const n = parseInt(userText, 10);
-        if (!Number.isFinite(n) || n < 3 || n > 12) {
-          return "¿Me lo decís con un número entre 3 y 12? 😊";
+        const cleanText = userText.trim();
+      
+        if (!/^\d+$/.test(cleanText)) {
+          return render(
+            currentStep.on_invalid_numeric ??
+            "¿Me lo decís solo con un numerito? 😊"
+          );
         }
-        if (currentStep.save_as) state.slots[currentStep.save_as] = n;
+      
+        const n = Number(cleanText);
+      
+        if (n < 3) {
+          return render(
+            currentStep.on_out_of_range?.under_age ??
+            "¡Ho ho ho! Parece que sos muy pequeñito para escribir solo. Pedile ayuda a mamá, papá o un adulto. 🎄"
+          );
+        }
+      
+        if (n > 12) {
+          return render(
+            currentStep.on_out_of_range?.over_age ??
+            "¡Ho ho ho! Parece que ya sos bastante grande. La magia de Navidad igual es para todos. 🎄"
+          );
+        }
+      
+        if (currentStep.save_as) {
+          state.slots[currentStep.save_as] = n;
+        }
       } else {
-        if (currentStep.save_as) state.slots[currentStep.save_as] = userText.trim().slice(0, 40);
+        if (currentStep.save_as) {
+          state.slots[currentStep.save_as] = userText.trim().slice(0, 40);
+        }
       }
 
       // Avanzar al siguiente paso del flujo
