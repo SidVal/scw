@@ -79,12 +79,12 @@ export function createSantaEngine(brain, storage, safety) {
 
     // 3. Flujo Abierto de Mensajería (Chatting) basado en Intents
     const intent = detectIntent(userText);
-    const pool = brain.replies[intent];
-
-    if (!pool) {
-      return "Ho ho ho. No estoy seguro de haber entendido. ¿Querés contarme algo lindo de la Navidad? ✨";
+    const pool = brain.replies[intent] ?? brain.replies.fallback;
+    
+    if (!pool || pool.length === 0) {
+      return "Ho ho ho. Me quedé sin palabras mágicas por un momento. ¿Me lo contás de otra forma? 🎄";
     }
-
+    
     return render(pick(pool));
   }
 
