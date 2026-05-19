@@ -98,9 +98,35 @@ async function init() {
   // Levanta el paso cero y lo pinta directo en la UI al arrancar.
   addMessage(santa.boot(), "santa");
 
+    function handleDebugCommand(text) {
+    const command = text.trim().toLowerCase();
+  
+    if (command === "/reset" || command === "/exit") {
+      inputEl.disabled = true;
+      sendBtn.disabled = true;
+  
+      storage.clear();
+      inputEl.value = "";
+      addMessage("🛷 Reiniciando la magia de Navidad...", "santa");
+  
+      setTimeout(() => {
+        window.location.reload();
+      }, 700);
+  
+      return true;
+    }
+  
+    return false;
+  }
+
   function sendMessage() {
     const text = inputEl.value.trim();
     if (!text) return;
+
+    // Comandos internos de depuración
+    if (handleDebugCommand(text)) {
+      return;
+    }
 
     // 1. Filtrado de inputs inválidos en el Front
     if (!isValidUserInput(text)) {
@@ -123,29 +149,39 @@ async function init() {
     // 4. Mostrar feedback de "escribiendo..."
     const typingEl = santaTyping();
 
-    // 5. El motor procesa el mensaje JUSTO ANTES de responder en la UI.
-    const reply = santa.next(text);
+    let reply =
+      "Ups. Se me mezclaron unos regalos en el taller 🎁 ¿Me repetís eso de nuevo?";
 
-    // Calcular delay natural basado en la longitud del texto final de Papá Noel
+    try {
+      // 5. El motor procesa el mensaje antes de responder en la UI
+      reply = santa.next(text);
+    } catch (err) {
+      console.error(err);
+    }
+
     const typingTime = Math.min(
       2500,
       Math.max(1200, 800 + reply.length * 20)
     );
 
-    // 6. Entregar la respuesta con delay lúdico
     setTimeout(() => {
-      typingEl.remove();
-      addMessage(reply, "santa");
-
-      // Rehabilitar controles y devolver el foco a la caja de texto
-      inputEl.disabled = false;
-      sendBtn.disabled = false;
-      inputEl.focus();
+      try {
+        typingEl.remove();
+        addMessage(reply, "santa");
+      } catch (err) {
+        console.error(err);
+      } finally {
+        // Pase lo que pase, la UI vuelve a estar disponible
+        inputEl.disabled = false;
+        sendBtn.disabled = false;
+        inputEl.focus();
+      }
     }, typingTime);
   }
 
-  // Event Listeners únicos
+  // Event listeners únicos
   sendBtn.addEventListener("click", sendMessage);
+
   inputEl.addEventListener("keydown", e => {
     if (e.key === "Enter") sendMessage();
   });
