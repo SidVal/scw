@@ -8,6 +8,8 @@ const messagesEl = document.getElementById("messages");
 const inputEl = document.getElementById("userInput");
 const sendBtn = document.getElementById("sendBtn");
 
+// ✨ NOTA: Se eliminaron las líneas globales que daban error aquí arriba.
+
 function addMessage(text, author, extraClass = "") {
   const div = document.createElement("div");
   div.className = `msg ${author} ${extraClass}`;
@@ -45,7 +47,8 @@ async function init() {
   const safety = createSafety();
   const santa = createSantaEngine(brain, storage, safety);
 
-  // Mensaje de bienvenida inicial (Boot del Onboarding)
+  // 🚀 Mensaje de bienvenida inicial (Boot dinámico del Onboarding)
+  // Levanta el paso cero y lo pinta directo en la UI al arrancar.
   addMessage(santa.boot(), "santa");
 
   function sendMessage() {
@@ -74,7 +77,6 @@ async function init() {
     const typingEl = santaTyping();
 
     // 5. El motor procesa el mensaje JUSTO ANTES de responder en la UI.
-    // Esto previene que el estado del storage se adelante a la vista del usuario.
     const reply = santa.next(text);
 
     // Calcular delay natural basado en la longitud del texto final de Papá Noel
