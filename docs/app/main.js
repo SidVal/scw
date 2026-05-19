@@ -35,10 +35,57 @@ function isValidUserInput(text) {
 }
 
 async function loadBrain() {
-  // Ajustado a la ruta estándar de la estructura del proyecto
-  const res = await fetch("./app/content/santa_brain.json");
-  if (!res.ok) throw new Error("No se pudo cargar santa_brain.json");
-  return res.json();
+  const url = "./app/content/santa_brain.json";
+
+  let res;
+
+  try {
+    res = await fetch(url, { cache: "no-store" });
+  } catch (err) {
+    throw new Error(`No se pudo conectar para cargar ${url}`);
+  }
+
+  if (!res.ok) {
+    throw new Error(`No se pudo cargar ${url}. HTTP ${res.status}`);
+  }
+
+  let brain;
+
+  try {
+    brain = await res.json();
+  } catch (err) {
+    throw new Error(`El archivo ${url} no es un JSON válido`);
+  }
+
+  validateBrain(brain);
+
+  return brain;
+}
+
+function validateBrain(brain) {
+  if (!brain || typeof brain !== "object") {
+    throw new Error("El brain debe ser un objeto");
+  }
+
+  if (!Array.isArray(brain.intents)) {
+    throw new Error("brain.intents debe ser un array");
+  }
+
+  if (!brain.replies || typeof brain.replies !== "object" || Array.isArray(brain.replies)) {
+    throw new Error("brain.replies debe ser un objeto");
+  }
+
+  if (!brain.flows || typeof brain.flows !== "object" || Array.isArray(brain.flows)) {
+    throw new Error("brain.flows debe ser un objeto");
+  }
+
+  if (!brain.flows.onboarding || !Array.isArray(brain.flows.onboarding.steps)) {
+    throw new Error("brain.flows.onboarding.steps debe ser un array");
+  }
+
+  if (!brain.replies.fallback || !Array.isArray(brain.replies.fallback)) {
+    throw new Error("brain.replies.fallback debe existir y ser un array");
+  }
 }
 
 async function init() {
