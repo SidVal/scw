@@ -100,3 +100,9 @@ body {
 .chat-input button:hover {
   background: #991b1b;
 }
+
+.chat-input button:disabled,
+.chat-input input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
