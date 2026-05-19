@@ -1,3 +1,5 @@
+//docs/app/main.js
+
 import { createStorage } from "./storage.js";
 import { createSafety } from "./safety.js";
 import { createSantaEngine } from "./santaEngine.js";
@@ -22,6 +24,7 @@ function santaTyping() {
 function isValidUserInput(text) {
   const t = text.trim();
 
+  // Filtra si son solo símbolos, caracteres individuales (salvo números) o vacío
   if (/^[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ]+$/.test(t)) return false;
   if (/^[a-zA-ZáéíóúÁÉÍÓÚñÑ]$/.test(t)) return false;
   if (t.length < 2 && !/^\d+$/.test(t)) return false;
@@ -30,6 +33,7 @@ function isValidUserInput(text) {
 }
 
 async function loadBrain() {
+  // Ajustado a la ruta estándar de la estructura del proyecto
   const res = await fetch("./app/content/santa_brain.json");
   if (!res.ok) throw new Error("No se pudo cargar santa_brain.json");
   return res.json();
@@ -41,12 +45,14 @@ async function init() {
   const safety = createSafety();
   const santa = createSantaEngine(brain, storage, safety);
 
+  // Mensaje de bienvenida inicial (Boot del Onboarding)
   addMessage(santa.boot(), "santa");
 
   function sendMessage() {
     const text = inputEl.value.trim();
     if (!text) return;
 
+    // 1. Filtrado de inputs inválidos en el Front
     if (!isValidUserInput(text)) {
       addMessage(
         "😊 ¿Me lo podés decir con palabras o un número? Así te entiendo mejor.",
@@ -56,23 +62,40 @@ async function init() {
       return;
     }
 
+    // 2. Pintar mensaje del niño en UI y limpiar la caja
     addMessage(text, "child");
     inputEl.value = "";
 
+    // 3. Bloquear UI temporalmente para evitar doble envío o spam
+    inputEl.disabled = true;
+    sendBtn.disabled = true;
+
+    // 4. Mostrar feedback de "escribiendo..."
     const typingEl = santaTyping();
+
+    // 5. El motor procesa el mensaje JUSTO ANTES de responder en la UI.
+    // Esto previene que el estado del storage se adelante a la vista del usuario.
     const reply = santa.next(text);
+
+    // Calcular delay natural basado en la longitud del texto final de Papá Noel
     const typingTime = Math.min(
       2500,
       Math.max(1200, 800 + reply.length * 20)
     );
 
+    // 6. Entregar la respuesta con delay lúdico
     setTimeout(() => {
       typingEl.remove();
       addMessage(reply, "santa");
+
+      // Rehabilitar controles y devolver el foco a la caja de texto
+      inputEl.disabled = false;
+      sendBtn.disabled = false;
+      inputEl.focus();
     }, typingTime);
   }
 
-  // ✅ EVENT LISTENERS SE REGISTRAN UNA SOLA VEZ
+  // Event Listeners únicos
   sendBtn.addEventListener("click", sendMessage);
   inputEl.addEventListener("keydown", e => {
     if (e.key === "Enter") sendMessage();
