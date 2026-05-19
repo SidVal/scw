@@ -1,3 +1,4 @@
+// docs/app/storage.js
 export function createStorage(namespace = "santa-chat") {
   function get(key) {
     try {
