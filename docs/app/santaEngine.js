@@ -1,3 +1,4 @@
+// docs/app/santaEngine.js
 export function createSantaEngine(brain, storage, safety) {
   const state =
     storage.get("state") ??
