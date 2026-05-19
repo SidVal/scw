@@ -8,6 +8,7 @@ export function createSantaEngine(brain, storage, safety) {
   }
 
   function render(text) {
+    if (!text) return "";
     return text.replaceAll(
       "{childName}",
       state.slots.childName ?? "amiguito o amiguita"
@@ -15,6 +16,7 @@ export function createSantaEngine(brain, storage, safety) {
   }
 
   function pick(arr) {
+    if (!arr || arr.length === 0) return null;
     return arr[Math.floor(Math.random() * arr.length)];
   }
 
@@ -35,40 +37,46 @@ export function createSantaEngine(brain, storage, safety) {
   }
 
   function next(userText) {
+    // 1. Escudo de seguridad perimetral
     const safetyResult = safety.check(userText);
     if (safetyResult.blocked) {
       return safetyResult.reply;
     }
 
+    // 2. Flujo Onboarding guiado por Pasos
     if (state.flow === "onboarding") {
       const flow = brain.flows.onboarding;
-      const step = flow.steps[state.stepIndex];
+      const currentStep = flow.steps[state.stepIndex];
 
-      if (step.save_as) {
-        if (step.expect === "number_3_12") {
-          const n = parseInt(userText, 10);
-          if (!Number.isFinite(n) || n < 3 || n > 12) {
-            return "¿Me lo decís con un número entre 3 y 12? 😊";
-          }
-          state.slots[step.save_as] = n;
-        } else {
-          state.slots[step.save_as] = userText.trim().slice(0, 40);
+      // Validar inputs específicos por paso antes de avanzar
+      if (currentStep.expect === "number_3_12") {
+        const n = parseInt(userText, 10);
+        if (!Number.isFinite(n) || n < 3 || n > 12) {
+          return "¿Me lo decís con un número entre 3 y 12? 😊";
         }
+        if (currentStep.save_as) state.slots[currentStep.save_as] = n;
+      } else {
+        if (currentStep.save_as) state.slots[currentStep.save_as] = userText.trim().slice(0, 40);
       }
 
+      // Avanzar al siguiente paso del flujo
       state.stepIndex += 1;
 
+      // Si terminamos los pasos del onboarding, pasamos a chat libre
       if (state.stepIndex >= flow.steps.length) {
         state.flow = "chatting";
         state.stepIndex = 0;
         save();
+        // Fallback seguro si el brain no define un saludo genérico de chat libre
         return "¡Genial! 🎄 ¿Charlamos sobre tu lista de deseos o sobre la Navidad?";
       }
 
       save();
+      // Renderiza dinámicamente el diálogo de Santa configurado en el cerebro para este paso
       return render(flow.steps[state.stepIndex].santa);
     }
 
+    // 3. Flujo Abierto de Mensajería (Chatting) basado en Intents
     const intent = detectIntent(userText);
     const pool = brain.replies[intent];
 
