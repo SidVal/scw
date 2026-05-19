@@ -130,17 +130,23 @@ export function createSantaEngine(brain, storage, safety) {
     }
 
     let result;
-
+    
     if (currentStep.expect === "number_3_12") {
       result = handleNumberStep(currentStep, userText);
+    } else if (currentStep.expect === "intent_choice") {
+      state.flow = "chatting";
+      state.stepIndex = 0;
+      save();
+    
+      return handleChatting(userText);
     } else {
       result = handleFreeTextStep(currentStep, userText);
     }
-
+    
     if (!result.ok) {
       return result.reply;
     }
-
+    
     state.stepIndex += 1;
 
     if (state.stepIndex >= steps.length) {
