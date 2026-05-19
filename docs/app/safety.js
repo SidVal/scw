@@ -1,3 +1,4 @@
+//docs/app/safety.js
 export function createSafety() {
   const rules = [
     {
