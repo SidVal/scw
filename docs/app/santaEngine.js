@@ -29,11 +29,26 @@ export function createSantaEngine(brain, storage, safety) {
     return "unknown";
   }
 
+  function resetOnboarding() {
+  state.flow = "onboarding";
+  state.stepIndex = 0;
+  state.slots = {};
+  save();
+}
+
   function boot() {
     if (state.flow === "onboarding") {
-      const step = brain.flows.onboarding.steps[state.stepIndex];
+      const steps = brain.flows?.onboarding?.steps;
+      const step = steps?.[state.stepIndex];
+  
+      if (!step) {
+        resetOnboarding();
+        return render(brain.flows.onboarding.steps[0].santa);
+      }
+  
       return render(step.santa);
     }
+  
     return "¡Ho ho ho! 🎅 ¿De qué te gustaría hablar ahora?";
   }
 
