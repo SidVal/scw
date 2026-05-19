@@ -1,7 +1,7 @@
 {
   "version": 1,
   "lang": "es-AR",
-  "generatedAt": "2026-01-07T18:00:08.485Z",
+  "generatedAt": "2026-05-19T14:56:13.570Z",
   "intents": [
     {
       "id": "greet",
@@ -9,7 +9,11 @@
         "hola",
         "buenas",
         "hello",
-        "holaaa"
+        "holaaa",
+        "buen día",
+        "buenas tardes",
+        "che",
+        "holi"
       ]
     },
     {
@@ -20,7 +24,15 @@
         "regalos",
         "navidad",
         "lista",
-        "deseo"
+        "deseo",
+        "pedir",
+        "traigas",
+        "traeme",
+        "juguete",
+        "bici",
+        "play",
+        "playstation",
+        "muñeca"
       ]
     },
     {
@@ -28,7 +40,8 @@
       "keywords": [
         "tengo",
         "años",
-        "edad"
+        "edad",
+        "cumplo"
       ]
     },
     {
@@ -38,7 +51,12 @@
         "estás",
         "vives",
         "polo",
-        "norte"
+        "norte",
+        "viver",
+        "vivi",
+        "casa",
+        "taller",
+        "vane"
       ]
     },
     {
@@ -49,7 +67,15 @@
         "whatsapp",
         "instagram",
         "dni",
-        "colegio"
+        "colegio",
+        "escuela",
+        "calle",
+        "celular",
+        "celu",
+        "número",
+        "piso",
+        "barrio",
+        "vivo en"
       ]
     },
     {
@@ -58,41 +84,94 @@
         "chau",
         "adiós",
         "hasta luego",
-        "me voy"
+        "me voy",
+        "chauuu",
+        "buenas noches",
+        "saludos"
+      ]
+    },
+    {
+      "id": "behavior",
+      "keywords": [
+        "porté",
+        "porte",
+        "mal",
+        "bueno",
+        "buena",
+        "travesura",
+        "lío",
+        "hice",
+        "pegué",
+        "ayudé",
+        "obedecí"
       ]
     }
   ],
   "replies": {
     "greet": [
       "¡Ho ho ho! ¡Hola! Soy Papá Noel. ¿Cómo te llamás?",
-      "¡Hola, campeón o campeona! ¿Querés contarme qué te hace feliz en estas fiestas?"
+      "¡Hola, che! ¿Cómo va todo por ahí? Contame, ¿cómo te llamás?",
+      "¡Qué alegría que me escribas! Soy Papá Noel. ¿Cuál es tu nombre?"
     ],
     "wishlist": [
       "¡Me encanta tu idea! Antes de anotar, contame. ¿Es para jugar, para aprender o para crear cosas?",
-      "¡Perfecto! ¿Podés elegir 1 o 2 regalos que te ilusionen mucho?"
+      "¡Perfecto! ¿Podés elegir 1 o 2 regalos que te ilusionen mucho?",
+      "¡Tomado nota en mi lista mágica! 📜 ¿Hay algo más que te gustaría pedir o con eso ya estamos?"
     ],
     "where": [
       "Estoy preparando todo en mi taller del Polo Norte. ¡Los duendes están a full!",
-      "Entre nieve y luces. Mi taller está muy cerquita del Polo Norte."
+      "Entre nieve y luces. Mi taller está muy cerquita del Polo Norte.",
+      "¡Acá hace un frío bárbaro! Estoy en el Polo Norte revisando el trineo."
     ],
     "goodbye": [
-      "¡Gracias por charlar conmigo! Que tengas una noche mágica. Ho ho ho."
+      "¡Gracias por charlar conmigo! Que tengas una noche mágica. Ho ho ho.",
+      "¡Un abrazo gigante! Portate bien y nos vemos prontito en Navidad. ¡Ho ho ho!"
+    ],
+    "unsafe_personal": [
+      "¡Ho ho ho! Acordate que tus datos son secretos de duendecillo, ¡no hace falta que me los pases por acá! Yo ya sé exactamente cómo llegar con mi trineo y la magia de la Navidad. 🧭✨",
+      "¡Che, no te preocupes por tu dirección ni tus datos! Mi brújula mágica nunca falla y sabe bien dónde encontrarte. ¡Mejor contame a qué te gusta jugar! 🎄",
+      "¡Alto ahí, amiguito! Las reglas del Polo Norte dicen que la información privada es secreta. ¡Yo ya sé todo lo necesario para visitarte! ¿Qué regalo tenés en mente?"
+    ],
+    "behavior": [
+      "¡Ho ho ho! Todos cometemos errores a veces. Lo importante es pedir perdón y tratar de mejorar cada día. ¡Yo sé que tenés un gran corazón! ❤️",
+      "Los duendes me dijeron que sos un sol, aunque a veces hagas alguna travesura. ¡A todos nos pasa! ¿Hacemos el trato de esforzarnos un poquito más?"
+    ],
+    "fallback": [
+      "¡Ho ho ho! Justo pasó Rodolfo corriendo y me distraje. ¿Me lo repetís más fácil? 🦌",
+      "🦌🦌🦌 ¿Los viste? Me distraje ... cuéntame de nuevo ¿qué me decías?",
+      "¡Qué interesante! Pero mis oídos de viejito no entendieron bien. ¿Me contás de tus regalos o de cómo te portaste este año?"
     ]
   },
   "flows": {
+    "global_intercepts": [
+      {
+        "if_intent": "unsafe_personal",
+        "action": "reply_and_repeat_step"
+      },
+      {
+        "if_intent": "behavior",
+        "action": "reply_and_continue"
+      }
+    ],
     "onboarding": {
       "steps": [
         {
           "id": "ask_name",
           "santa": "¡Ho ho ho! ¿Cómo te llamás?",
           "expect": "free_text",
-          "save_as": "childName"
+          "save_as": "childName",
+          "on_invalid": "¡Ho ho ho! Me parece que se te escapó un botón. ¿Me repetís tu nombre?"
         },
         {
           "id": "ask_age",
           "santa": "¡Encantado, {childName}! ¿Cuántos años tenés?",
           "expect": "number_3_12",
-          "save_as": "childAge"
+          "save_as": "childAge",
+          "on_invalid_numeric": "¡Ho ho ho! Poneme solo el numerito. ¿Cuántos años tenés?",
+          "on_out_of_range": {
+            "under_age": "¡Ay, pero qué pequeñito! Seguro todavía usás chupete. ¡Dejale el celu a mamá o papá para que te ayuden! 🍼",
+            "over_age": "¡Epa! Ya estás enorme para el chat, ¡pero la magia de la Navidad es para todos! Cuántos años tenés realmente? 😉"
+          }
         },
         {
           "id": "ask_mood",
@@ -103,7 +182,8 @@
         {
           "id": "handoff",
           "santa": "¡Qué lindo, {childName}! Ahora sí. ¿Charlamos sobre tu lista de deseos o sobre la Navidad?",
-          "expect": "intent_choice"
+          "expect": "intent_choice",
+          "on_complete": "switch_to_free_chat"
         }
       ]
     }
